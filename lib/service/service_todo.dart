@@ -3,9 +3,12 @@ import 'package:ray_plan/model/todo.dart';
 import '../global.dart';
 
 /// create a new todo or update a existed todo
-Future<int> createOrUpdateTodo(Todo todo) async {
-  final id = Global.isar.todos.put(todo);
-  return id;
+Future<Todo> createOrUpdateTodo(Todo todo) async {
+  await Global.isar.writeTxn((isar) async {
+    final id = await isar.todos.put(todo);
+    todo.id = id;
+  });
+  return todo;
 }
 
 /// a stream notify todo changed
