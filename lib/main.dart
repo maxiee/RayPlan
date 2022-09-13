@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'global.dart';
+
 void main() {
+  Global.init();
   runApp(const MyApp());
 }
 

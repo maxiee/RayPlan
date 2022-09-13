@@ -34,7 +34,7 @@ dependencies:
 
   isar: 2.5.0
   isar_flutter_libs: 2.5.0 # contains the binaries
-
+  path_provider: 2.0.11
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
