@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:ray_plan/model/todo.dart';
 
 abstract class Global {
   static late Isar isar;
@@ -8,6 +9,8 @@ abstract class Global {
     final db_path = await getApplicationSupportDirectory();
     print('db save to $db_path');
 
-    isar = await Isar.open(schemas: [], directory: db_path.path);
+    isar = await Isar.open(
+      schemas: [TodoSchema], 
+      directory: db_path.path);
   }
 }
