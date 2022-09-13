@@ -2,7 +2,7 @@ import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
 abstract class Global {
-  static late var isar;
+  static late Isar isar;
 
   static init() async {
     final db_path = await getApplicationSupportDirectory();
