@@ -4,7 +4,7 @@ part 'todo.g.dart';
 
 @Collection()
 class Todo {
-  int id = Isar.autoIncrement;
+  Id id = Isar.autoIncrement;
 
   late String title;
   late bool finished;

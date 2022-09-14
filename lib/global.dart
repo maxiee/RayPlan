@@ -11,8 +11,7 @@ abstract class Global {
     final db_path = await getApplicationSupportDirectory();
     print('db save to $db_path');
 
-    isar = await Isar.open(
-      schemas: [TodoSchema], 
+    isar = await Isar.open([TodoSchema], 
       directory: db_path.path);
   }
 }

@@ -32,8 +32,8 @@ dependencies:
   flutter:
     sdk: flutter
 
-  isar: ^2.5.0
-  isar_flutter_libs: ^2.5.0 # contains the binaries
+  isar: ^3.0.0-dev.14
+  isar_flutter_libs: ^3.0.0-dev.14 # contains the binaries
   path_provider: ^2.0.11
   tuple: ^2.0.0
   provider: ^6.0.3
@@ -47,7 +47,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   
-  isar_generator: 2.5.0
+  isar_generator: 3.0.0-dev.14
   build_runner: any
 
   # The "flutter_lints" package below contains a set of recommended lints to

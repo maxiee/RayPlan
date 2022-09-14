@@ -6,88 +6,91 @@ part of 'todo.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, avoid_js_rounded_ints, prefer_final_locals
 
 extension GetTodoCollection on Isar {
-  IsarCollection<Todo> get todos => getCollection();
+  IsarCollection<Todo> get todos => this.collection();
 }
 
 const TodoSchema = CollectionSchema(
-  name: 'Todo',
-  schema:
-      '{"name":"Todo","idName":"id","properties":[{"name":"created","type":"Long"},{"name":"description","type":"String"},{"name":"finished","type":"Bool"},{"name":"title","type":"String"},{"name":"updated","type":"Long"}],"indexes":[],"links":[]}',
-  idName: 'id',
-  propertyIds: {
-    'created': 0,
-    'description': 1,
-    'finished': 2,
-    'title': 3,
-    'updated': 4
+  name: r'Todo',
+  id: -505491818817781703,
+  properties: {
+    r'created': PropertySchema(
+      id: 0,
+      name: r'created',
+      type: IsarType.dateTime,
+    ),
+    r'description': PropertySchema(
+      id: 1,
+      name: r'description',
+      type: IsarType.string,
+    ),
+    r'finished': PropertySchema(
+      id: 2,
+      name: r'finished',
+      type: IsarType.bool,
+    ),
+    r'title': PropertySchema(
+      id: 3,
+      name: r'title',
+      type: IsarType.string,
+    ),
+    r'updated': PropertySchema(
+      id: 4,
+      name: r'updated',
+      type: IsarType.dateTime,
+    )
   },
-  listProperties: {},
-  indexIds: {},
-  indexValueTypes: {},
-  linkIds: {},
-  backlinkLinkNames: {},
-  getId: _todoGetId,
-  setId: _todoSetId,
-  getLinks: _todoGetLinks,
-  attachLinks: _todoAttachLinks,
+  estimateSize: _todoEstimateSize,
   serializeNative: _todoSerializeNative,
   deserializeNative: _todoDeserializeNative,
   deserializePropNative: _todoDeserializePropNative,
   serializeWeb: _todoSerializeWeb,
   deserializeWeb: _todoDeserializeWeb,
   deserializePropWeb: _todoDeserializePropWeb,
-  version: 3,
+  idName: r'id',
+  indexes: {},
+  links: {},
+  embeddedSchemas: {},
+  getId: _todoGetId,
+  getLinks: _todoGetLinks,
+  attach: _todoAttach,
+  version: '3.0.0-dev.14',
 );
 
-int? _todoGetId(Todo object) {
-  if (object.id == Isar.autoIncrement) {
-    return null;
-  } else {
-    return object.id;
-  }
+int _todoEstimateSize(
+  Todo object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  bytesCount += 3 + object.description.length * 3;
+  bytesCount += 3 + object.title.length * 3;
+  return bytesCount;
 }
 
-void _todoSetId(Todo object, int id) {
-  object.id = id;
+int _todoSerializeNative(
+  Todo object,
+  IsarBinaryWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeDateTime(offsets[0], object.created);
+  writer.writeString(offsets[1], object.description);
+  writer.writeBool(offsets[2], object.finished);
+  writer.writeString(offsets[3], object.title);
+  writer.writeDateTime(offsets[4], object.updated);
+  return writer.usedBytes;
 }
 
-List<IsarLinkBase> _todoGetLinks(Todo object) {
-  return [];
-}
-
-void _todoSerializeNative(IsarCollection<Todo> collection, IsarRawObject rawObj,
-    Todo object, int staticSize, List<int> offsets, AdapterAlloc alloc) {
-  var dynamicSize = 0;
-  final value0 = object.created;
-  final _created = value0;
-  final value1 = object.description;
-  final _description = IsarBinaryWriter.utf8Encoder.convert(value1);
-  dynamicSize += (_description.length) as int;
-  final value2 = object.finished;
-  final _finished = value2;
-  final value3 = object.title;
-  final _title = IsarBinaryWriter.utf8Encoder.convert(value3);
-  dynamicSize += (_title.length) as int;
-  final value4 = object.updated;
-  final _updated = value4;
-  final size = staticSize + dynamicSize;
-
-  rawObj.buffer = alloc(size);
-  rawObj.buffer_length = size;
-  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
-  final writer = IsarBinaryWriter(buffer, staticSize);
-  writer.writeDateTime(offsets[0], _created);
-  writer.writeBytes(offsets[1], _description);
-  writer.writeBool(offsets[2], _finished);
-  writer.writeBytes(offsets[3], _title);
-  writer.writeDateTime(offsets[4], _updated);
-}
-
-Todo _todoDeserializeNative(IsarCollection<Todo> collection, int id,
-    IsarBinaryReader reader, List<int> offsets) {
+Todo _todoDeserializeNative(
+  Id id,
+  IsarBinaryReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
   final object = Todo();
   object.created = reader.readDateTime(offsets[0]);
   object.description = reader.readString(offsets[1]);
@@ -99,10 +102,12 @@ Todo _todoDeserializeNative(IsarCollection<Todo> collection, int id,
 }
 
 P _todoDeserializePropNative<P>(
-    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
-  switch (propertyIndex) {
-    case -1:
-      return id as P;
+  IsarBinaryReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
     case 0:
       return (reader.readDateTime(offset)) as P;
     case 1:
@@ -114,120 +119,95 @@ P _todoDeserializePropNative<P>(
     case 4:
       return (reader.readDateTime(offset)) as P;
     default:
-      throw 'Illegal propertyIndex';
+      throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-dynamic _todoSerializeWeb(IsarCollection<Todo> collection, Todo object) {
-  final jsObj = IsarNative.newJsObject();
-  IsarNative.jsObjectSet(
-      jsObj, 'created', object.created.toUtc().millisecondsSinceEpoch);
-  IsarNative.jsObjectSet(jsObj, 'description', object.description);
-  IsarNative.jsObjectSet(jsObj, 'finished', object.finished);
-  IsarNative.jsObjectSet(jsObj, 'id', object.id);
-  IsarNative.jsObjectSet(jsObj, 'title', object.title);
-  IsarNative.jsObjectSet(
-      jsObj, 'updated', object.updated.toUtc().millisecondsSinceEpoch);
-  return jsObj;
+Object _todoSerializeWeb(IsarCollection<Todo> collection, Todo object) {
+  /*final jsObj = IsarNative.newJsObject();*/ throw UnimplementedError();
 }
 
-Todo _todoDeserializeWeb(IsarCollection<Todo> collection, dynamic jsObj) {
-  final object = Todo();
-  object.created = IsarNative.jsObjectGet(jsObj, 'created') != null
-      ? DateTime.fromMillisecondsSinceEpoch(
-              IsarNative.jsObjectGet(jsObj, 'created'),
-              isUtc: true)
-          .toLocal()
-      : DateTime.fromMillisecondsSinceEpoch(0);
-  object.description = IsarNative.jsObjectGet(jsObj, 'description') ?? '';
-  object.finished = IsarNative.jsObjectGet(jsObj, 'finished') ?? false;
-  object.id = IsarNative.jsObjectGet(jsObj, 'id') ?? double.negativeInfinity;
-  object.title = IsarNative.jsObjectGet(jsObj, 'title') ?? '';
-  object.updated = IsarNative.jsObjectGet(jsObj, 'updated') != null
-      ? DateTime.fromMillisecondsSinceEpoch(
-              IsarNative.jsObjectGet(jsObj, 'updated'),
-              isUtc: true)
-          .toLocal()
-      : DateTime.fromMillisecondsSinceEpoch(0);
-  return object;
+Todo _todoDeserializeWeb(IsarCollection<Todo> collection, Object jsObj) {
+  /*final object = Todo();object.created = IsarNative.jsObjectGet(jsObj, r'created') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'created') as int, isUtc: true).toLocal() : DateTime.fromMillisecondsSinceEpoch(0);object.description = IsarNative.jsObjectGet(jsObj, r'description') ?? '';object.finished = IsarNative.jsObjectGet(jsObj, r'finished') ?? false;object.id = IsarNative.jsObjectGet(jsObj, r'id') ?? (double.negativeInfinity as int);object.title = IsarNative.jsObjectGet(jsObj, r'title') ?? '';object.updated = IsarNative.jsObjectGet(jsObj, r'updated') != null ? DateTime.fromMillisecondsSinceEpoch(IsarNative.jsObjectGet(jsObj, r'updated') as int, isUtc: true).toLocal() : DateTime.fromMillisecondsSinceEpoch(0);*/
+  //return object;
+  throw UnimplementedError();
 }
 
 P _todoDeserializePropWeb<P>(Object jsObj, String propertyName) {
   switch (propertyName) {
-    case 'created':
-      return (IsarNative.jsObjectGet(jsObj, 'created') != null
-          ? DateTime.fromMillisecondsSinceEpoch(
-                  IsarNative.jsObjectGet(jsObj, 'created'),
-                  isUtc: true)
-              .toLocal()
-          : DateTime.fromMillisecondsSinceEpoch(0)) as P;
-    case 'description':
-      return (IsarNative.jsObjectGet(jsObj, 'description') ?? '') as P;
-    case 'finished':
-      return (IsarNative.jsObjectGet(jsObj, 'finished') ?? false) as P;
-    case 'id':
-      return (IsarNative.jsObjectGet(jsObj, 'id') ?? double.negativeInfinity)
-          as P;
-    case 'title':
-      return (IsarNative.jsObjectGet(jsObj, 'title') ?? '') as P;
-    case 'updated':
-      return (IsarNative.jsObjectGet(jsObj, 'updated') != null
-          ? DateTime.fromMillisecondsSinceEpoch(
-                  IsarNative.jsObjectGet(jsObj, 'updated'),
-                  isUtc: true)
-              .toLocal()
-          : DateTime.fromMillisecondsSinceEpoch(0)) as P;
     default:
-      throw 'Illegal propertyName';
+      throw IsarError('Illegal propertyName');
   }
 }
 
-void _todoAttachLinks(IsarCollection col, int id, Todo object) {}
+Id _todoGetId(Todo object) {
+  return object.id;
+}
+
+List<IsarLinkBase<dynamic>> _todoGetLinks(Todo object) {
+  return [];
+}
+
+void _todoAttach(IsarCollection<dynamic> col, Id id, Todo object) {
+  object.id = id;
+}
 
 extension TodoQueryWhereSort on QueryBuilder<Todo, Todo, QWhere> {
   QueryBuilder<Todo, Todo, QAfterWhere> anyId() {
-    return addWhereClauseInternal(const IdWhereClause.any());
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(const IdWhereClause.any());
+    });
   }
 }
 
 extension TodoQueryWhere on QueryBuilder<Todo, Todo, QWhereClause> {
   QueryBuilder<Todo, Todo, QAfterWhereClause> idEqualTo(int id) {
-    return addWhereClauseInternal(IdWhereClause.between(
-      lower: id,
-      includeLower: true,
-      upper: id,
-      includeUpper: true,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: id,
+        upper: id,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterWhereClause> idNotEqualTo(int id) {
-    if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(
-        IdWhereClause.lessThan(upper: id, includeUpper: false),
-      ).addWhereClauseInternal(
-        IdWhereClause.greaterThan(lower: id, includeLower: false),
-      );
-    } else {
-      return addWhereClauseInternal(
-        IdWhereClause.greaterThan(lower: id, includeLower: false),
-      ).addWhereClauseInternal(
-        IdWhereClause.lessThan(upper: id, includeUpper: false),
-      );
-    }
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            )
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            );
+      } else {
+        return query
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            )
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            );
+      }
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterWhereClause> idGreaterThan(int id,
       {bool include = false}) {
-    return addWhereClauseInternal(
-      IdWhereClause.greaterThan(lower: id, includeLower: include),
-    );
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.greaterThan(lower: id, includeLower: include),
+      );
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterWhereClause> idLessThan(int id,
       {bool include = false}) {
-    return addWhereClauseInternal(
-      IdWhereClause.lessThan(upper: id, includeUpper: include),
-    );
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.lessThan(upper: id, includeUpper: include),
+      );
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterWhereClause> idBetween(
@@ -236,47 +216,52 @@ extension TodoQueryWhere on QueryBuilder<Todo, Todo, QWhereClause> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClauseInternal(IdWhereClause.between(
-      lower: lowerId,
-      includeLower: includeLower,
-      upper: upperId,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: lowerId,
+        includeLower: includeLower,
+        upper: upperId,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 }
 
 extension TodoQueryFilter on QueryBuilder<Todo, Todo, QFilterCondition> {
   QueryBuilder<Todo, Todo, QAfterFilterCondition> createdEqualTo(
       DateTime value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'created',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'created',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> createdGreaterThan(
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'created',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'created',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> createdLessThan(
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'created',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'created',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> createdBetween(
@@ -285,156 +270,189 @@ extension TodoQueryFilter on QueryBuilder<Todo, Todo, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'created',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'created',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> descriptionEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'description',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'description',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> descriptionGreaterThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'description',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'description',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> descriptionLessThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'description',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'description',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> descriptionBetween(
     String lower,
     String upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'description',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'description',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> descriptionStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'description',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'description',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> descriptionEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'description',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'description',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> descriptionContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'description',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'description',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> descriptionMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'description',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'description',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Todo, Todo, QAfterFilterCondition> descriptionIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'description',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Todo, Todo, QAfterFilterCondition> descriptionIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'description',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> finishedEqualTo(bool value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'finished',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'finished',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> idEqualTo(int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'id',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'id',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> idGreaterThan(
     int value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'id',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> idLessThan(
     int value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'id',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> idBetween(
@@ -443,147 +461,179 @@ extension TodoQueryFilter on QueryBuilder<Todo, Todo, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'id',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> titleEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'title',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'title',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> titleGreaterThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'title',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'title',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> titleLessThan(
     String value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'title',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'title',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> titleBetween(
     String lower,
     String upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'title',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'title',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> titleStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'title',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'title',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> titleEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'title',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'title',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> titleContains(String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'title',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'title',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> titleMatches(String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'title',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'title',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Todo, Todo, QAfterFilterCondition> titleIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'title',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Todo, Todo, QAfterFilterCondition> titleIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'title',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> updatedEqualTo(
       DateTime value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'updated',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'updated',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> updatedGreaterThan(
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'updated',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'updated',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> updatedLessThan(
     DateTime value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'updated',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'updated',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterFilterCondition> updatedBetween(
@@ -592,168 +642,226 @@ extension TodoQueryFilter on QueryBuilder<Todo, Todo, QFilterCondition> {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'updated',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'updated',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 }
+
+extension TodoQueryObject on QueryBuilder<Todo, Todo, QFilterCondition> {}
 
 extension TodoQueryLinks on QueryBuilder<Todo, Todo, QFilterCondition> {}
 
-extension TodoQueryWhereSortBy on QueryBuilder<Todo, Todo, QSortBy> {
+extension TodoQuerySortBy on QueryBuilder<Todo, Todo, QSortBy> {
   QueryBuilder<Todo, Todo, QAfterSortBy> sortByCreated() {
-    return addSortByInternal('created', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'created', Sort.asc);
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterSortBy> sortByCreatedDesc() {
-    return addSortByInternal('created', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'created', Sort.desc);
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterSortBy> sortByDescription() {
-    return addSortByInternal('description', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'description', Sort.asc);
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterSortBy> sortByDescriptionDesc() {
-    return addSortByInternal('description', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'description', Sort.desc);
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterSortBy> sortByFinished() {
-    return addSortByInternal('finished', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'finished', Sort.asc);
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterSortBy> sortByFinishedDesc() {
-    return addSortByInternal('finished', Sort.desc);
-  }
-
-  QueryBuilder<Todo, Todo, QAfterSortBy> sortById() {
-    return addSortByInternal('id', Sort.asc);
-  }
-
-  QueryBuilder<Todo, Todo, QAfterSortBy> sortByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'finished', Sort.desc);
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterSortBy> sortByTitle() {
-    return addSortByInternal('title', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'title', Sort.asc);
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterSortBy> sortByTitleDesc() {
-    return addSortByInternal('title', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'title', Sort.desc);
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterSortBy> sortByUpdated() {
-    return addSortByInternal('updated', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updated', Sort.asc);
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterSortBy> sortByUpdatedDesc() {
-    return addSortByInternal('updated', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updated', Sort.desc);
+    });
   }
 }
 
-extension TodoQueryWhereSortThenBy on QueryBuilder<Todo, Todo, QSortThenBy> {
+extension TodoQuerySortThenBy on QueryBuilder<Todo, Todo, QSortThenBy> {
   QueryBuilder<Todo, Todo, QAfterSortBy> thenByCreated() {
-    return addSortByInternal('created', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'created', Sort.asc);
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterSortBy> thenByCreatedDesc() {
-    return addSortByInternal('created', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'created', Sort.desc);
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterSortBy> thenByDescription() {
-    return addSortByInternal('description', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'description', Sort.asc);
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterSortBy> thenByDescriptionDesc() {
-    return addSortByInternal('description', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'description', Sort.desc);
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterSortBy> thenByFinished() {
-    return addSortByInternal('finished', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'finished', Sort.asc);
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterSortBy> thenByFinishedDesc() {
-    return addSortByInternal('finished', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'finished', Sort.desc);
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterSortBy> thenById() {
-    return addSortByInternal('id', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.asc);
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterSortBy> thenByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.desc);
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterSortBy> thenByTitle() {
-    return addSortByInternal('title', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'title', Sort.asc);
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterSortBy> thenByTitleDesc() {
-    return addSortByInternal('title', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'title', Sort.desc);
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterSortBy> thenByUpdated() {
-    return addSortByInternal('updated', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updated', Sort.asc);
+    });
   }
 
   QueryBuilder<Todo, Todo, QAfterSortBy> thenByUpdatedDesc() {
-    return addSortByInternal('updated', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updated', Sort.desc);
+    });
   }
 }
 
 extension TodoQueryWhereDistinct on QueryBuilder<Todo, Todo, QDistinct> {
   QueryBuilder<Todo, Todo, QDistinct> distinctByCreated() {
-    return addDistinctByInternal('created');
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'created');
+    });
   }
 
   QueryBuilder<Todo, Todo, QDistinct> distinctByDescription(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('description', caseSensitive: caseSensitive);
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'description', caseSensitive: caseSensitive);
+    });
   }
 
   QueryBuilder<Todo, Todo, QDistinct> distinctByFinished() {
-    return addDistinctByInternal('finished');
-  }
-
-  QueryBuilder<Todo, Todo, QDistinct> distinctById() {
-    return addDistinctByInternal('id');
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'finished');
+    });
   }
 
   QueryBuilder<Todo, Todo, QDistinct> distinctByTitle(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('title', caseSensitive: caseSensitive);
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'title', caseSensitive: caseSensitive);
+    });
   }
 
   QueryBuilder<Todo, Todo, QDistinct> distinctByUpdated() {
-    return addDistinctByInternal('updated');
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'updated');
+    });
   }
 }
 
 extension TodoQueryProperty on QueryBuilder<Todo, Todo, QQueryProperty> {
+  QueryBuilder<Todo, int, QQueryOperations> idProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'id');
+    });
+  }
+
   QueryBuilder<Todo, DateTime, QQueryOperations> createdProperty() {
-    return addPropertyNameInternal('created');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'created');
+    });
   }
 
   QueryBuilder<Todo, String, QQueryOperations> descriptionProperty() {
-    return addPropertyNameInternal('description');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'description');
+    });
   }
 
   QueryBuilder<Todo, bool, QQueryOperations> finishedProperty() {
-    return addPropertyNameInternal('finished');
-  }
-
-  QueryBuilder<Todo, int, QQueryOperations> idProperty() {
-    return addPropertyNameInternal('id');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'finished');
+    });
   }
 
   QueryBuilder<Todo, String, QQueryOperations> titleProperty() {
-    return addPropertyNameInternal('title');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'title');
+    });
   }
 
   QueryBuilder<Todo, DateTime, QQueryOperations> updatedProperty() {
-    return addPropertyNameInternal('updated');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'updated');
+    });
   }
 }

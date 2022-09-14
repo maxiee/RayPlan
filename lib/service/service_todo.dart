@@ -4,9 +4,8 @@ import '../global.dart';
 
 /// create a new todo or update a existed todo
 Future<Todo> createOrUpdateTodo(Todo todo) async {
-  await Global.isar.writeTxn((isar) async {
-    final id = await isar.todos.put(todo);
-    todo.id = id;
+  await Global.isar.writeTxn(() async {
+    todo.id = await Global.isar.todos.put(todo);
   });
   return todo;
 }

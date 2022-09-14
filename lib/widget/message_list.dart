@@ -7,11 +7,11 @@ typedef FetchPageFunction<T> = Future<List<T>> Function(int pageKey);
 class MessageList<T> extends StatefulWidget {
   const MessageList(
       {super.key,
-      required this.builderDelegate,
+      required this.itemBuilder,
       required this.fetchPage,
       required this.pageSize});
 
-  final PagedChildBuilderDelegate<T> builderDelegate;
+  final ItemWidgetBuilder<T> itemBuilder;
   final FetchPageFunction<T> fetchPage;
   final int pageSize;
 
@@ -53,6 +53,7 @@ class _MessageListState<T> extends State<MessageList<T>> {
     return MessageCard(
         child: PagedListView<int, T>(
             pagingController: _pagingController,
-            builderDelegate: widget.builderDelegate));
+            builderDelegate:
+                PagedChildBuilderDelegate<T>(itemBuilder: widget.itemBuilder)));
   }
 }
