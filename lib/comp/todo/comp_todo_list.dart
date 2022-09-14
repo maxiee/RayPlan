@@ -11,18 +11,17 @@ class CompTodoListAll extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Global.isar.todos.where().sortByCreated().findAll();
-    return MessageCard(
-        child: SizedBox(
-      height: MediaQuery.of(context).size.height * 0.5,
+    return Container(
+      height: 200,
+      width: MediaQuery.of(context).size.height / 3,
       child: MessageList<Todo>(
-          itemBuilder: (context, item, index) => Text(item.title),
-          fetchPage: ((pageKey) async => Global.isar.todos
-              .where()
-              .offset(pageKey)
-              .limit(10)
-              .findAll()),
-          pageSize: 10),
-    ));
+      itemBuilder: (context, item, index) => Text(item.title),
+      fetchPage: ((pageKey) async => Global.isar.todos
+          .where()
+          .offset(pageKey)
+          .limit(10)
+          .findAll()),
+      pageSize: 10),
+    );
   }
 }

@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'RayPlan',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -38,25 +39,49 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  ScrollController _scrollController = new ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("RayPlan"),
+        actions: [
+          Center(
+              child: Text(
+            "GitHub star maxiee/RayPlan  ",
+            style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.yellow),
+          ))
+        ],
       ),
       body: Column(children: [
         Flexible(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Consumer<ServiceMessages>(
-                builder: (context, value, child) => ListView.builder(
-                      itemBuilder: (context, index) => value.imMessages[index],
-                      itemCount: value.imMessages.length,
-                    )),
+            child: Consumer<ServiceMessages>(builder: (context, value, child) {
+              Future(() => _scrollController.animateTo(
+                  _scrollController.position.maxScrollExtent,
+                  duration: Duration(milliseconds: 200),
+                  curve: Curves.easeOut));
+              return ListView.builder(
+                controller: _scrollController,
+                itemBuilder: (context, index) => value.imMessages[index],
+                itemCount: value.imMessages.length,
+              );
+            }),
           ),
         ),
         CompInput()
       ]),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
   }
 }

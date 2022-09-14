@@ -52,6 +52,7 @@ class _MessageListState<T> extends State<MessageList<T>> {
   Widget build(BuildContext context) {
     return MessageCard(
         child: PagedListView<int, T>(
+            shrinkWrap: true,
             pagingController: _pagingController,
             builderDelegate:
                 PagedChildBuilderDelegate<T>(itemBuilder: widget.itemBuilder)));
