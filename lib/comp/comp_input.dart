@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:ray_plan/commands/create_a_todo.dart';
 import 'package:ray_plan/comp/todo/comp_todo_create_only_title.dart';
 import 'package:ray_plan/comp/todo/comp_todo_list.dart';
 import 'package:ray_plan/widget/message_text.dart';
 import 'package:tuple/tuple.dart';
 
 import '../global.dart';
+import '../service/service_im.dart';
 
 typedef WidgetCreator = Widget Function();
 
-final menu = <String, List<Tuple2<String, WidgetCreator>>>{
+final menu = <String, List<Tuple2<String, Function>>>{
   "Todo": [
-    Tuple2("create a todo", () => const CompTodoCreateOnlyTitle()),
-    Tuple2("todo list all", () => const CompTodoListAll())
+    const Tuple2("create a todo", create_a_todo),
+    // Tuple2("todo list all", () => const CompTodoListAll())
   ]
 };
 
@@ -56,9 +58,8 @@ class _CompInputState extends State<CompInput> {
                     children: menu[currentSelected]
                             ?.map((m) => OutlinedButton(
                                 onPressed: () {
-                                  Global.serviceMessages.sendUserMessage(MessageText(text: m.item1));
-                                  Global.serviceMessages
-                                    .sendSystemMessage(m.item2());
+                                  send_text_user_message(m.item1);
+                                  m.item2();
                                 },
                                 child: Text(m.item1)))
                             .toList() ??
