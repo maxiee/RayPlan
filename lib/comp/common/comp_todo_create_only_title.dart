@@ -2,17 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:ray_plan/comp/base/functional_sateful_widget.dart';
 import 'package:ray_plan/widget/message_card.dart';
 
+class CompStringInput extends FunctionalStatefulWidget<String> {
+  CompStringInput(
+      {super.key, required this.title, this.confirm = 'OK', this.defaultValue});
 
-class CompTodoCreateOnlyTitle extends FunctionalStatefulWidget<String> {
-  CompTodoCreateOnlyTitle({super.key});
+  final String title;
+  final String confirm;
+  final String? defaultValue;
 
   @override
-  State<CompTodoCreateOnlyTitle> createState() =>
-      _CompTodoCreateOnlyTitleState();
+  State<CompStringInput> createState() => _CompStringInputState();
 }
 
-class _CompTodoCreateOnlyTitleState extends State<CompTodoCreateOnlyTitle> {
+class _CompStringInputState extends State<CompStringInput> {
   TextEditingController controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.defaultValue != null) {
+      controller.text = widget.defaultValue!;
+    }
+  }
 
   @override
   void dispose() {
@@ -24,13 +35,13 @@ class _CompTodoCreateOnlyTitleState extends State<CompTodoCreateOnlyTitle> {
   Widget build(BuildContext context) {
     return MessageCard(
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        const Text("new todo: "),
+        Text(widget.title),
         SizedBox(
             width: MediaQuery.of(context).size.width / 3,
             child: TextField(controller: controller)),
         OutlinedButton(
             onPressed: () => widget.completer.complete(controller.text),
-            child: const Text('create'))
+            child: Text(widget.confirm))
       ]),
     );
   }

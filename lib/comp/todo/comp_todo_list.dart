@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:isar/isar.dart';
 import 'package:ray_plan/model/todo.dart';
-import 'package:ray_plan/widget/message_card.dart';
 import 'package:ray_plan/widget/message_list.dart';
 
 import '../../global.dart';

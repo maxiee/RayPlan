@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../common/consts.dart';
+
 class MessageCard extends StatelessWidget {
   const MessageCard({super.key, required this.child});
 
@@ -10,7 +12,7 @@ class MessageCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(15),
       decoration: const BoxDecoration(
-          color: Color(0xFFDEDEDE),
+          color: common_color_bubble,
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(10),
               topRight: Radius.circular(10),
