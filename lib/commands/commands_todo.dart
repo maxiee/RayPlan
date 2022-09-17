@@ -1,5 +1,6 @@
 import 'dart:async';
-import 'package:ray_plan/comp/common/comp_todo_create_only_title.dart';
+import 'package:ray_plan/comp/common/comp_string_input.dart';
+import 'package:ray_plan/comp/common/comp_todo_actions.dart';
 import 'package:ray_plan/comp/todo/comp_todo_list.dart';
 import 'package:ray_plan/model/todo.dart';
 import 'package:ray_plan/service/service_im.dart';
@@ -9,17 +10,26 @@ import '../global.dart';
 
 /// command: create a todo
 void create_a_todo() => empty_todo_context()
-    .then(todo_input_title)
-    .then(todo_input_description)
-    .then(create_or_update_todo)
-    .then((todo) {
-        send_text_system_message("a new todo created: ");
-        send_system_widget(CompTodoOneLine(todo: todo));
+        .then(todo_input_title)
+        .then(todo_input_description)
+        .then(create_or_update_todo)
+        .then((todo) {
+      send_text_system_message("a new todo created: ");
+      send_system_widget(CompTodoOneLine(todo: todo));
     });
 
 /// command: get all todo items
 void find_todo_all() => send_text_system_message_chain("all todo items:")
-  .then((_) async => send_system_widget(const CompTodoListAll()));
+    .then((_) async => send_system_widget(const CompTodoListAll()));
+
+/// show all action can be taken on a todo
+void todo_actions(Todo todo) =>
+    send_text_system_message_chain("on selected: ${todo.title}").then((_) =>
+        send_system_widget_chain(CompActions(actions: [
+          todo.finished ? 'mark as unfinished' : 'mark as finished',
+          'edit',
+          'delete'
+        ])));
 
 /// create a empty todo context
 Future<Todo> empty_todo_context() async => Todo()
@@ -29,12 +39,15 @@ Future<Todo> empty_todo_context() async => Todo()
   ..created = DateTime.now()
   ..updated = DateTime.now();
 
+Future<Todo> todo_context(Todo todo) async => todo;
+
 /// interact input todo title
 FutureOr<Todo> todo_input_title(Todo todo) async =>
     todo..title = await send_system_widget_chain(comp_todo_input_title(todo));
 
 FutureOr<Todo> todo_input_description(Todo todo) async => todo
-  ..description = await send_system_widget_chain(comp_todo_input_description(todo));
+  ..description =
+      await send_system_widget_chain(comp_todo_input_description(todo));
 
 /// comp: input title
 CompStringInput comp_todo_input_title(Todo todo) {
