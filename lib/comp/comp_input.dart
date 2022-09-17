@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ray_plan/commands/commands_todo.dart';
-import 'package:ray_plan/comp/common/comp_todo_create_only_title.dart';
-import 'package:ray_plan/comp/todo/comp_todo_list.dart';
-import 'package:ray_plan/widget/message_text.dart';
 import 'package:tuple/tuple.dart';
 
-import '../global.dart';
 import '../service/service_im.dart';
 
 typedef WidgetCreator = Widget Function();
@@ -13,7 +9,7 @@ typedef WidgetCreator = Widget Function();
 final menu = <String, List<Tuple2<String, Function>>>{
   "Todo": [
     const Tuple2("create a todo", create_a_todo),
-    // Tuple2("todo list all", () => const CompTodoListAll())
+    const Tuple2("find todo all", find_todo_all),
   ]
 };
 

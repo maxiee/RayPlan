@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:ray_plan/comp/common/comp_todo_create_only_title.dart';
+import 'package:ray_plan/comp/todo/comp_todo_list.dart';
 import 'package:ray_plan/model/todo.dart';
 import 'package:ray_plan/service/service_im.dart';
 
@@ -15,6 +16,10 @@ void create_a_todo() => empty_todo_context()
         send_text_system_message("a new todo created: ");
         send_system_widget(CompTodoOneLine(todo: todo));
     });
+
+/// command: get all todo items
+void find_todo_all() => send_text_system_message_chain("all todo items:")
+  .then((_) async => send_system_widget(const CompTodoListAll()));
 
 /// create a empty todo context
 Future<Todo> empty_todo_context() async => Todo()

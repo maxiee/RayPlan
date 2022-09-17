@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:isar/isar.dart';
+import 'package:ray_plan/comp/todo/comp_todo_one_line.dart';
 import 'package:ray_plan/model/todo.dart';
 import 'package:ray_plan/widget/message_list.dart';
 
@@ -14,7 +15,7 @@ class CompTodoListAll extends StatelessWidget {
       height: 200,
       width: MediaQuery.of(context).size.height / 3,
       child: MessageList<Todo>(
-      itemBuilder: (context, item, index) => Text(item.title),
+      itemBuilder: (context, item, index) => CompTodoOneLine(todo: item),
       fetchPage: ((pageKey) async => Global.isar.todos
           .where()
           .offset(pageKey)
