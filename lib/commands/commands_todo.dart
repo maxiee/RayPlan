@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'package:ray_plan/commands/base.dart';
 import 'package:ray_plan/comp/common/comp_string_input.dart';
 import 'package:ray_plan/comp/common/comp_todo_actions.dart';
 import 'package:ray_plan/comp/todo/comp_todo_list.dart';
 import 'package:ray_plan/model/todo.dart';
 import 'package:ray_plan/service/service_im.dart';
+import 'package:tuple/tuple.dart';
 
 import '../comp/todo/comp_todo_one_line.dart';
 import '../global.dart';
@@ -24,12 +26,18 @@ void find_todo_all() => send_text_system_message_chain("all todo items:")
 
 /// show all action can be taken on a todo
 void todo_actions(Todo todo) =>
-    send_text_system_message_chain("on selected: ${todo.title}").then((_) =>
-        send_system_widget_chain(CompActions(actions: [
-          todo.finished ? 'mark as unfinished' : 'mark as finished',
-          'edit',
-          'delete'
-        ])));
+    send_text_system_message_chain("on selected: ${todo.title}")
+        .then((_) => send_system_widget_chain(CompActions(actions: [
+              todo.finished ? 'mark as unfinished' : 'mark as finished',
+              'edit',
+              'delete'
+            ])))
+        .then((action) => select<String, Todo>(action, todo, [
+              Tuple2(
+                  "delete",
+                  (todo) => delete_todo(todo).then((_) =>
+                      send_text_system_message("${todo.title} deleted.")))
+            ]));
 
 /// create a empty todo context
 Future<Todo> empty_todo_context() async => Todo()
@@ -72,6 +80,14 @@ FutureOr<Todo> create_or_update_todo(Todo todo) async {
     todo.id = await Global.isar.todos.put(todo);
   });
   return todo;
+}
+
+Future delete_todo(Todo todo) async {
+  var ret = false;
+  await Global.isar.writeTxn(() async {
+    ret = await Global.isar.todos.delete(todo.id);
+  });
+  return ret;
 }
 
 /// a stream notify todo changed
