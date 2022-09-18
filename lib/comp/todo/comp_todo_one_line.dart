@@ -15,9 +15,10 @@ class CompTodoOneLine extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(todo.title, style: const TextStyle(fontSize: 20)),
-            Text(todo.description,
-                style: const TextStyle(fontSize: 16, color: Colors.grey))
+            Text(todo.title,
+                style: TextStyle(
+                    color: todo.finished ? Colors.green : Colors.black)),
+            Text(todo.description, style: const TextStyle(color: Colors.grey))
           ]),
     );
   }

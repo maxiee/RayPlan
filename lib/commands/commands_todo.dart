@@ -25,19 +25,25 @@ void find_todo_all() => send_text_system_message_chain("all todo items:")
     .then((_) async => send_system_widget(const CompTodoListAll()));
 
 /// show all action can be taken on a todo
-void todo_actions(Todo todo) =>
-    send_text_system_message_chain("on selected: ${todo.title}")
-        .then((_) => send_system_widget_chain(CompActions(actions: [
-              todo.finished ? 'mark as unfinished' : 'mark as finished',
-              'edit',
-              'delete'
-            ])))
-        .then((action) => select<String, Todo>(action, todo, [
-              Tuple2(
-                  "delete",
-                  (todo) => delete_todo(todo).then((_) =>
-                      send_text_system_message("${todo.title} deleted.")))
-            ]));
+void todo_actions(Todo todo) => send_text_system_message_chain(
+        "on selected: ${todo.title}")
+    .then((_) => send_system_widget_chain(CompActions(actions: [
+          todo.finished ? 'mark as unfinished' : 'mark as finished',
+          'edit',
+          'delete'
+        ])))
+    .then((action) => select<String, Todo>(action, todo, [
+          Tuple2(
+              "delete",
+              (todo) => delete_todo(todo).then(
+                  (_) => send_text_system_message("${todo.title} deleted."))),
+          Tuple2(
+              'mark as finished',
+              (todo) => finish_todo(todo).then(
+                  (_) => send_text_system_message("${todo.title} finished."))),
+          Tuple2('mark as unfinished',
+              (_) => send_text_system_message("${todo.title} unfinished."))
+        ]));
 
 /// create a empty todo context
 Future<Todo> empty_todo_context() async => Todo()
@@ -88,6 +94,22 @@ Future delete_todo(Todo todo) async {
     ret = await Global.isar.todos.delete(todo.id);
   });
   return ret;
+}
+
+Future finish_todo(Todo todo) async {
+  todo.finished = true;
+  await Global.isar.writeTxn(() async {
+    await Global.isar.todos.put(todo);
+  });
+  return todo;
+}
+
+Future unfinish_todo(Todo todo) async {
+  todo.finished = false;
+  await Global.isar.writeTxn(() async {
+    await Global.isar.todos.put(todo);
+  });
+  return todo;
 }
 
 /// a stream notify todo changed
