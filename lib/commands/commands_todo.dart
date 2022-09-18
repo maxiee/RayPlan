@@ -41,8 +41,10 @@ void todo_actions(Todo todo) => send_text_system_message_chain(
               'mark as finished',
               (todo) => finish_todo(todo).then(
                   (_) => send_text_system_message("${todo.title} finished."))),
-          Tuple2('mark as unfinished',
-              (_) => send_text_system_message("${todo.title} unfinished."))
+          Tuple2(
+              'mark as unfinished',
+              (todo) => unfinish_todo(todo).then(
+                  (_) => send_text_system_message("${todo.title} unfinished.")))
         ]));
 
 /// create a empty todo context
